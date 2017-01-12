@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+xmlns:jaxws="http://java.sun.com/xml/ns/jaxws"
+jaxb:version="2.0"
+xmlns:ns0="http://voucher.gl.itf.nc/IImportVoucherData"
+targetNamespace="http://voucher.gl.itf.nc/IImportVoucherData">
+
+<jaxws:bindings>
+	<jaxws:package name="nc.itf.gl.voucher"/>
+</jaxws:bindings>
+
+<wsdl:types>
+   <xsd:schema xmlns:ns="http://voucher.gl.itf.nc/IImportVoucherData"
+			attributeFormDefault="unqualified"
+			elementFormDefault="unqualified"
+			targetNamespace="http://voucher.gl.itf.nc/IImportVoucherData" jaxb:version="2.0">
+	<xsd:annotation>
+    	<xsd:appinfo>
+   			<jaxb:schemaBindings>
+    			<jaxb:package name="nc.itf.gl.voucher"/>
+    		</jaxb:schemaBindings>
+   		</xsd:appinfo>
+   	</xsd:annotation>
+	<xsd:element name="importVoucherData">
+         <xsd:complexType>
+            <xsd:sequence>
+				<xsd:element name="string"  minOccurs="0" nillable="true" type="xsd:string"/>
+             </xsd:sequence>  
+         </xsd:complexType>
+     </xsd:element>
+	<xsd:element name="importVoucherDataResponse">
+         <xsd:complexType>
+			<xsd:sequence/>
+         </xsd:complexType>
+     </xsd:element>
+   </xsd:schema>
+</wsdl:types>
+    <wsdl:message name="importVoucherDataRequest">
+        <wsdl:part name="parameters"  element="ns0:importVoucherData"/>
+    </wsdl:message>
+    <wsdl:message name="importVoucherDataResponse">
+        <wsdl:part name="parameters"  element="ns0:importVoucherDataResponse"/>
+    </wsdl:message>
+
+    <wsdl:portType name="IImportVoucherDataPortType">
+        <wsdl:operation name="importVoucherData">
+            <wsdl:input message="ns0:importVoucherDataRequest" wsaw:Action="urn:importVoucherData"/>
+            <wsdl:output message="ns0:importVoucherDataResponse" wsaw:Action="urn:importVoucherDataResponse"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    
+    
+    <wsdl:binding name="IImportVoucherDataSOAP11Binding" type="ns0:IImportVoucherDataPortType">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <wsdl:operation name="importVoucherData">
+            <soap:operation soapAction="urn:importVoucherData" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="IImportVoucherData">
+        <wsdl:port name="IImportVoucherDataSOAP11port_http" binding="ns0:IImportVoucherDataSOAP11Binding">
+            <soap:address location="http://localhost/uapws/service/IImportVoucherData"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

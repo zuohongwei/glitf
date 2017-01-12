@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<module>
+	<public>
+		<component>
+			<interface>nc.itf.gl.voucher.IImportVoucherData</interface>
+			<implementation>nc.bs.gl.voucher.impl.ImportVoucherData</implementation>
+			<extension class="nc.uap.ws.deploy.OxbWSExtensionProcessor">
+				<wsdl>/nc/itf/gl/voucher/IImportVoucherData.wsdl</wsdl>
+				<address>/IImportVoucherData</address>
+			</extension>
+		</component>
+	</public>
+	<private>
+	</private>
+</module>
