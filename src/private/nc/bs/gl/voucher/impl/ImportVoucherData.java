@@ -1,11 +1,14 @@
 package nc.bs.gl.voucher.impl;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 
 import nc.bs.framework.common.NCLocator;
 import nc.bs.ufida.log.VoucherLogInfo;
@@ -18,6 +21,11 @@ import nc.vo.gl.pubvoucher.VoucherVO;
 import nc.vo.pub.BusinessException;
 import nc.vo.pub.lang.UFDate;
 import nc.vo.pub.lang.UFDouble;
+
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONObject;
+
+import cn.bizfocus.ezw.expense.framework.common.util.RestClientUtil;
 
 public class ImportVoucherData implements IImportVoucherData {
 
@@ -72,22 +80,22 @@ public class ImportVoucherData implements IImportVoucherData {
 								String deptcode = object.getString("deptcode");
 								String custcode = object.getString("custcode");
 								String jobcide = object.getString("jobcode");
-								if(null != deptcode && !"".equals(deptcode)){
+								if(null != deptcode && !"".equals(deptcode) && !"null".equals(deptcode)){
 									voucherXmlVO.setChecktype1("2");
 									voucherXmlVO.setValuecode1(deptcode);
 								}
-								if(null != custcode && !"".equals(custcode)){
+								if(null != custcode && !"".equals(custcode) && !"null".equals(custcode)){
 									voucherXmlVO.setChecktype2("73");
 									voucherXmlVO.setValuecode2(custcode);
 								}
-								if(null != jobcide && !"".equals(jobcide)){
+								if(null != jobcide && !"".equals(jobcide) && !"null".equals(jobcide)){
 									voucherXmlVO.setChecktype3("jobass");
 									voucherXmlVO.setValuecode3(jobcide);
 								}
 								list.add(voucherXmlVO);
 							}
 							VoucherXmlVO dfVO = new VoucherXmlVO();
-							dfVO.setSubjcode("14050215");// 贷方科目22020306\预提一般费用
+							dfVO.setSubjcode("22020306");// 贷方科目22020306\预提一般费用
 							dfVO.setBbdf(df);
 							dfVO.setYbdf(df);
 							dfVO.setExplanation(object.getString("memo"));
@@ -118,18 +126,24 @@ public class ImportVoucherData implements IImportVoucherData {
 					}
 					return_obj.put("billList", return_array);
 					VoucherLogInfo.info(return_obj.toString());
+//					String remoteUrl = "https://211.95.28.171:4430/SynchroService/voucherDataRestful/receiveVoucherDataResponse/3";
+					String remoteUrl = "https://www.e-zw.cn/SynchroService/voucherDataRestful/receiveVoucherDataResponse/3";
+					RestClientUtil.initHttpsURLConnection("123456", "C:\\Program Files\\Java\\jdk1.5.0_12\\bin\\ezw-sit.jks", 
+							"C:\\Program Files\\Java\\jdk1.5.0_12\\bin\\ezw-sit.jks");
+					RestClientUtil.restPosthttps(remoteUrl, return_obj.toString());
 				} else {
 					msg = "billList为空";
 				}
-			} catch (JSONException e) {
+			} catch (Exception e) {
 				msg = e.getMessage();
+				e.printStackTrace();
 			}
 			if (!"".equals(msg)) {
 				VoucherLogInfo.info("单据编号：" + sourceid + "," + msg);
 			}
 		}
 	}
-
+	
 	public String createNCVoucher(VoucherInfo info, List<VoucherXmlVO> list)
 			throws BusinessException {
 		String voucherNo = "";
@@ -148,4 +162,14 @@ public class ImportVoucherData implements IImportVoucherData {
 		return voucherNo;
 	}
 
+	public static void main(String[] args) {
+		String remoteUrl = "https://211.95.28.171:4430/SynchroService/voucherDataRestful/receiveVoucherDataResponse/3";
+		try {
+			RestClientUtil.initHttpsURLConnection("123456", "C:\\Program Files (x86)\\Java\\jdk1.6.0_45\\bin\\ezw-sit.jks", "C:\\Program Files (x86)\\Java\\jdk1.6.0_45\\bin\\ezw-sit.jks");
+			RestClientUtil.restPosthttps(remoteUrl, "1");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }

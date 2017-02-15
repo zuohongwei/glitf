@@ -227,24 +227,28 @@ public class VoucherChangeUtil {
 
 	private void changeVoucherInfo(VoucherInfo info) throws Exception {
 		String corpcode = info.getCorpcode();
-		Object pk_corp = getQryService()
-				.executeQuery(
-						"select pk_corp from bd_corp where unitcode='"
-								+ corpcode + "'", new ColumnProcessor(1));
+		
+		String sql = "select bd_glorg.pk_entityorg from bd_glorgbook inner join bd_glorg on bd_glorgbook.pk_glorg=bd_glorg.pk_glorg " +
+				" where bd_glorgbook.glorgbookcode='"+corpcode+"'" ;
+//		Object pk_corp = getQryService()
+//				.executeQuery(
+//						"select pk_corp from bd_corp where unitcode='"
+//								+ corpcode + "'", new ColumnProcessor(1));
+		Object pk_corp = getQryService().executeQuery(sql, new ColumnProcessor(1));
 		if (null == pk_corp || "".equals(pk_corp)) {
 			throw new BusinessException("公司编码不存在");
 		}
-		Object userid = getQryService()
-				.executeQuery(
-						"SELECT userid FROM sm_userandclerk WHERE pk_psndoc in(SELECT pk_psnbasdoc FROM bd_psndoc where psncode='"
-								+ info.getPsncode() + "' and pk_corp='"
-								+pk_corp
-								+"')",
-						new ColumnProcessor(1));
-		if (null == userid || "".equals(userid)) {
-			throw new BusinessException("报销人员编码不存在");
-		}
-		info.setUserid(userid.toString());
+//		Object userid = getQryService()
+//				.executeQuery(
+//						"SELECT userid FROM sm_userandclerk WHERE pk_psndoc in(SELECT pk_psnbasdoc FROM bd_psndoc where psncode='"
+//								+ info.getPsncode() + "' and pk_corp='"
+//								+pk_corp
+//								+"')",
+//						new ColumnProcessor(1));
+//		if (null == userid || "".equals(userid)) {
+//			throw new BusinessException("报销人员编码不存在");
+//		}
+		info.setUserid("0001DB1000000001CBM4");
 		info.setPk_corp(pk_corp.toString());
 		info.setPk_glorgbook(((IGLOrgBookAcc) NCLocator.getInstance().lookup(
 				IGLOrgBookAcc.class.getName()))
@@ -427,10 +431,10 @@ public class VoucherChangeUtil {
 		vouchervo.setPk_prepared(getVoucherInfo().getUserid());
 		vouchervo.setPrepareddate(getVoucherInfo().getBusidate());
 		vouchervo.setVoucherkind(0);
-//		vouchervo.setVouchertypename("其他转账");
-//		vouchervo.setPk_vouchertype("0001DB100000000018L8");
-		vouchervo.setVouchertypename("记");
-		vouchervo.setPk_vouchertype("0001DEFAULT000000001");
+		vouchervo.setVouchertypename("其他转账");
+		vouchervo.setPk_vouchertype("0001DB100000000018L8");
+//		vouchervo.setVouchertypename("记");
+//		vouchervo.setPk_vouchertype("0001DEFAULT000000001");
 		vouchervo.setYear(getVoucherInfo().getYear());
 		vouchervo.setPeriod(getVoucherInfo().getPeriod());
 		// 主体帐簿设置
